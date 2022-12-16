@@ -38,5 +38,15 @@ AuthorSchema.virtual('dod_formatted').get(function() {
   return DateTime.fromJSDate(this.date_of_death).toLocaleString(DateTime.DATE_MED);
 });
 
+AuthorSchema.virtual('lifespan').get(function() {
+  if (this.date_of_birth && this.date_of_death) {
+    return `(${this.dob_formatted} - ${this.dod_formatted})`
+  } else if (this.date_of_birth) {
+    return `(${this.dob_formatted} - )`
+  } else {
+    return '(No lifespan info available)'
+  }
+});
+
 // Export model
 module.exports = mongoose.model("Author", AuthorSchema);
