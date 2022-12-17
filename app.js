@@ -1,4 +1,7 @@
 const dotenv = require('dotenv');
+const compression = require('compression');
+const helmet = require('helmet');
+
 dotenv.config();
 
 var createError = require('http-errors');
@@ -15,7 +18,7 @@ var app = express();
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
-const mongoDB = `mongodb+srv://ben-dev:${process.env.PASSWORD}@cluster0.bsiwzwr.mongodb.net/local_library?retryWrites=true&w=majority`;
+const mongoDB = `mongodb+srv://${process.env.MONGODB_URI}@cluster0.bsiwzwr.mongodb.net/local_library?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "MongoDB connection error:"));
@@ -24,6 +27,8 @@ db.on("error", console.error.bind(console, "MongoDB connection error:"));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(compression());
+app.use(helmet());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
